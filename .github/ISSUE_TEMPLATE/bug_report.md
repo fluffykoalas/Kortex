@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Submit a non-security related bug report
+about: Submit a non-security related bug
 title: ''
 labels: bug
 assignees: Legorooj
