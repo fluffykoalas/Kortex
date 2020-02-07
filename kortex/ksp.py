@@ -2,18 +2,19 @@
 
 from Cryptodome.Cipher import AES
 from Cryptodome.Hash.CMAC import new as _cmac_new
-from kortex.utils import _check_type
+from kortex.utils import check_type
+from kortex.exceptions import InvalidToken
 
 
-__all__ = ['KSP_1']
+__all__ = ['KSP1']
 
 
-class KSP_1:
+class KSP1:
     """
     Implementation of Koala Security Protocol 1. Please see the SPECS.rst file in the repo for details.
     """
     def __init__(self, key, nonce, mac_key):
-        _check_type(bytes, key=key, nonce=nonce, mac_key=mac_key)
+        check_type(bytes, key=key, nonce=nonce, mac_key=mac_key)
         
         if len(key) not in (16, 32):
             raise ValueError('invalid length for key. must be 128 or 256 bits.')
@@ -36,6 +37,8 @@ class KSP_1:
 class _KSP1_encryptor:
     """
     DO NOT CALL
+    
+    Use KSP1().encryptor() instead
     """
     
     def __init__(self, key, nonce, mac_key):
@@ -54,6 +57,8 @@ class _KSP1_encryptor:
 class _KSP1_decryptor:
     """
     DO NOT CALL
+    
+    Use KSP1().decryptor() instead
     """
     
     def __init__(self, key, nonce, mac_key):
@@ -65,4 +70,7 @@ class _KSP1_decryptor:
         return self._aes.decrypt(data)
     
     def finalize(self, tag):
-        self._mac.verify(tag)
+        try:
+            self._mac.verify(tag)
+        except Exception:
+            raise InvalidToken

@@ -91,3 +91,7 @@ venv.bak/
 
 # PyCharm projects
 .idea/
+
+# Local Package Testing
+localtesting/
+tests/gentests.py

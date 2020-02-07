@@ -3,3 +3,7 @@
 
 class InvalidToken(Exception):
     pass
+
+
+class SecurityRiskError(Exception):
+    pass
