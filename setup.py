@@ -17,6 +17,6 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools'
     ],
-    python_requires='3.7',
+    python_requires='==3.7',
     install_requires=['cryptography', 'pycryptodomex']
 )
