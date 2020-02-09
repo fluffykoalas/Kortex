@@ -1,6 +1,15 @@
 trigger:
-- master
-- dev
+  batch: true
+  branches:
+    include:
+      - master
+      - dev
+
+pr:
+  branches:
+    include:
+      - master
+      - dev 
 
 strategy:
   matrix:
@@ -28,6 +37,5 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    pip install pytest pytest-azurepipelines
     python -m unittest tests.tests
   displayName: 'Run Unit Tests'
