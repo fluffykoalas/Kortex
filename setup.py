@@ -18,5 +18,5 @@ setup(
         'Topic :: Software Development :: Build Tools'
     ],
     python_requires='>=3.7, <3.8',
-    install_requires=['cryptography', 'pycryptodomex']
+    install_requires=['cryptography']
 )
