@@ -1,7 +1,8 @@
 # Copyright (c) 2020 Fluffy Koalas open source software. This file is licensed under the MIT license. #
 
-from Cryptodome.Cipher import AES
-from Cryptodome.Hash.CMAC import new as _cmac_new
+from cryptography.hazmat.primitives.ciphers import Cipher, modes, algorithms
+from cryptography.hazmat.primitives.cmac import CMAC
+from cryptography.hazmat.backends import default_backend
 from kortex.utils import check_type
 from kortex.exceptions import InvalidToken
 
@@ -42,16 +43,16 @@ class _KSP1_encryptor:
     """
     
     def __init__(self, key, nonce, mac_key):
-        self._aes = AES.new(key, AES.MODE_CTR, initial_value=nonce, nonce=b'')
-        self._mac = _cmac_new(mac_key, ciphermod=AES)
+        self._aes = Cipher(algorithms.AES(key), modes.CTR(nonce), default_backend()).encryptor()
+        self._mac = CMAC(algorithms.AES(mac_key), default_backend())
     
     def update(self, data):
-        data = self._aes.encrypt(data)
+        data = self._aes.update(data)
         self._mac.update(data)
         return data
     
     def finalize(self):
-        return self._mac.digest()
+        return self._mac.finalize()
     
 
 class _KSP1_decryptor:
@@ -62,12 +63,12 @@ class _KSP1_decryptor:
     """
     
     def __init__(self, key, nonce, mac_key):
-        self._aes = AES.new(key, AES.MODE_CTR, initial_value=nonce, nonce=b'')
-        self._mac = _cmac_new(mac_key, ciphermod=AES)
+        self._aes = Cipher(algorithms.AES(key), modes.CTR(nonce), default_backend()).decryptor()
+        self._mac = CMAC(algorithms.AES(mac_key), default_backend())
     
     def update(self, data):
         self._mac.update(data)
-        return self._aes.decrypt(data)
+        return self._aes.update(data)
     
     def finalize(self, tag):
         try:
